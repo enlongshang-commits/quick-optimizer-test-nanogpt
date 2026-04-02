@@ -2,7 +2,7 @@
 # Small model + Shakespeare for fast sanity-check on any machine (CPU / MPS / GPU)
 # ~200 iters, no checkpoint saved
 optimizer_type = 'adamw'
-wandb_log = False
+wandb_log = True
 wandb_run_name = 'bench-quick-adamw'
 out_dir = 'out-bench-adamw'
 
@@ -34,7 +34,7 @@ decay_lr = True
 max_iters = 200
 batch_size = 32
 gradient_accumulation_steps = 1
-eval_interval = 50
+eval_interval = 20
 eval_iters = 20
 log_interval = 10
 always_save_checkpoint = False

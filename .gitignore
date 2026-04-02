@@ -19,6 +19,7 @@ __pycache__/
 # Logs
 *.log
 logs/
+wandb/
 
 # System
 .DS_Store

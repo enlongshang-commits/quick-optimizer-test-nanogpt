@@ -3,7 +3,7 @@
 # ~200 iters, no checkpoint saved
 # Note: Muon uses a higher lr than AdamW (0.02 vs 1e-3) — this is expected
 optimizer_type = 'muon'
-wandb_log = False
+wandb_log = True
 wandb_run_name = 'bench-quick-muon'
 out_dir = 'out-bench-muon'
 
@@ -35,7 +35,7 @@ decay_lr = True
 max_iters = 200
 batch_size = 32
 gradient_accumulation_steps = 1
-eval_interval = 50
+eval_interval = 20
 eval_iters = 20
 log_interval = 10
 always_save_checkpoint = False

@@ -10,6 +10,23 @@ Built on top of [nanoGPT](https://github.com/karpathy/nanoGPT).
 - Supports single GPU and multi-GPU (DDP) training
 - WandB logging for loss curve comparison
 
+## Platform Notes
+
+The default configs and patches in this repo are tuned for **Apple Silicon (MPS)**. If you are on a different platform, a few things need adjusting:
+
+| Setting | Mac (MPS) | Linux/CUDA | CPU-only |
+|---------|-----------|------------|----------|
+| `device` | `mps` | `cuda` | `cpu` |
+| `dtype` | `float32` | `bfloat16` or `float16` | `float32` |
+| `compile` | `False` | `True` | `False` |
+
+Additionally, the `soap.py` in this repo includes a patch that falls back `torch.linalg.eigh` and `torch.linalg.qr` to CPU, because MPS does not implement these ops. On CUDA this patch is harmless but unnecessary.
+
+To run on CUDA, override via command line:
+```bash
+python train.py configs/bench_quick_soap.py device=cuda dtype=bfloat16 compile=True
+```
+
 ## Setup
 
 ```bash
