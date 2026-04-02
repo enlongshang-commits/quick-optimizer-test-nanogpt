@@ -13,8 +13,8 @@ Built on top of [nanoGPT](https://github.com/karpathy/nanoGPT).
 ## Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/gpt2-optimizer-bench
-cd gpt2-optimizer-bench
+git clone https://github.com/enlongshang-commits/quick-optimizer-test-nanogpt
+cd quick-optimizer-test-nanogpt
 bash setup.sh
 ```
 
