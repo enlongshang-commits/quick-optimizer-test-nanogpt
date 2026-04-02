@@ -230,8 +230,10 @@ while True:
         losses = estimate_loss()
         print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         if wandb_log:
+            tokens_seen = iter_num * batch_size * block_size * gradient_accumulation_steps
             wandb.log({
                 "iter": iter_num,
+                "tokens": tokens_seen,
                 "train/loss": losses['train'],
                 "val/loss": losses['val'],
                 "lr": lr,
@@ -279,7 +281,8 @@ while True:
             running_mfu = mfu if running_mfu == -1.0 else 0.9 * running_mfu + 0.1 * mfu
         print(f"iter {iter_num}: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%")
         if wandb_log:
-            wandb.log({"iter": iter_num, "train/loss": lossf})
+            tokens_seen = iter_num * batch_size * block_size * gradient_accumulation_steps
+            wandb.log({"iter": iter_num, "tokens": tokens_seen, "train/loss": lossf})
     iter_num += 1
     local_iter_num += 1
 
