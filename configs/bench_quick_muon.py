@@ -21,8 +21,9 @@ bias = False
 # Optimizer
 learning_rate = 0.02   # Muon default; ~20x higher than AdamW
 weight_decay  = 0.1
-beta1 = 0.9
-beta2 = 0.95
+muon_momentum = 0.95   # Nesterov momentum for matrix params (Muon core)
+beta1 = 0.9            # Adam beta1 for non-matrix params (embedding, head, biases)
+beta2 = 0.95           # Adam beta2 for non-matrix params
 grad_clip = 1.0
 
 # LR schedule

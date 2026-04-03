@@ -20,7 +20,8 @@ def register(name):
     return decorator
 
 def create_optimizer(optimizer_type, model, weight_decay, learning_rate, betas,
-                     device_type, ddp=False, n_embd=768, n_head=12):
+                     muon_momentum=0.95, soap_precondition_frequency=10,
+                     device_type='cuda', ddp=False, n_embd=768, n_head=12):
     if optimizer_type not in OPTIMIZERS:
         raise ValueError(
             f"Unknown optimizer_type: {optimizer_type!r}. "
@@ -31,6 +32,8 @@ def create_optimizer(optimizer_type, model, weight_decay, learning_rate, betas,
         weight_decay=weight_decay,
         learning_rate=learning_rate,
         betas=betas,
+        muon_momentum=muon_momentum,
+        soap_precondition_frequency=soap_precondition_frequency,
         device_type=device_type,
         ddp=ddp,
         n_embd=n_embd,
@@ -91,7 +94,7 @@ def _create_adam_mini(model, weight_decay, learning_rate, betas, n_embd, n_head,
 
 
 @register('soap')
-def _create_soap(model, weight_decay, learning_rate, betas, **kwargs):
+def _create_soap(model, weight_decay, learning_rate, betas, soap_precondition_frequency, **kwargs):
     try:
         from soap import SOAP
     except ImportError:
@@ -102,14 +105,14 @@ def _create_soap(model, weight_decay, learning_rate, betas, **kwargs):
         lr=learning_rate,
         betas=betas,
         weight_decay=weight_decay,
-        precondition_frequency=10,
+        precondition_frequency=soap_precondition_frequency,
     )
-    print(f"[optimizer] SOAP  (lr={learning_rate}, precondition_frequency=10)")
+    print(f"[optimizer] SOAP  (lr={learning_rate}, precondition_frequency={soap_precondition_frequency})")
     return optimizer
 
 
 @register('muon')
-def _create_muon(model, weight_decay, learning_rate, ddp, **kwargs):
+def _create_muon(model, weight_decay, learning_rate, betas, muon_momentum, ddp, **kwargs):
     try:
         if ddp:
             from muon import MuonWithAuxAdam as MuonCls
@@ -130,9 +133,9 @@ def _create_muon(model, weight_decay, learning_rate, ddp, **kwargs):
             adam_params.append(param)
 
     param_groups = [
-        {'params': muon_params, 'use_muon': True,  'lr': learning_rate},
-        {'params': adam_params, 'use_muon': False, 'lr': learning_rate, 'weight_decay': weight_decay},
+        {'params': muon_params, 'use_muon': True,  'lr': learning_rate, 'momentum': muon_momentum, 'weight_decay': weight_decay},
+        {'params': adam_params, 'use_muon': False, 'lr': learning_rate, 'weight_decay': weight_decay, 'betas': betas},
     ]
     optimizer = MuonCls(param_groups)
-    print(f"[optimizer] Muon  (ddp={ddp}, muon_params={len(muon_params)}, adam_params={len(adam_params)})")
+    print(f"[optimizer] Muon  (ddp={ddp}, muon_params={len(muon_params)}, adam_params={len(adam_params)}, momentum={muon_momentum}, betas={betas})")
     return optimizer

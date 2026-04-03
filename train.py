@@ -56,6 +56,8 @@ max_iters = 600000
 weight_decay = 1e-1
 beta1 = 0.9
 beta2 = 0.95
+muon_momentum = 0.95              # Muon matrix-param Nesterov momentum (only used when optimizer_type='muon')
+soap_precondition_frequency = 10  # SOAP preconditioner update interval (only used when optimizer_type='soap')
 grad_clip = 1.0
 # lr schedule
 decay_lr = True
@@ -171,6 +173,8 @@ optimizer = create_optimizer(
     weight_decay=weight_decay,
     learning_rate=learning_rate,
     betas=(beta1, beta2),
+    muon_momentum=muon_momentum,
+    soap_precondition_frequency=soap_precondition_frequency,
     device_type=device_type,
     ddp=ddp,
     n_embd=n_embd,

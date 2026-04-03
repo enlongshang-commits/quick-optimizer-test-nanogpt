@@ -22,6 +22,7 @@ learning_rate = 3e-3   # SOAP default; higher than AdamW
 weight_decay  = 0.01
 beta1 = 0.95
 beta2 = 0.95
+soap_precondition_frequency = 10  # how often to update the preconditioner
 grad_clip = 1.0
 
 # LR schedule

@@ -44,7 +44,10 @@ class MyOptimizer(torch.optim.Optimizer):
 # ── 2. Register factory function ──────────────────────────────────────────────
 
 @register('my_optimizer')      # ← change this name
-def _create_my_optimizer(model, weight_decay, learning_rate, **kwargs):
+def _create_my_optimizer(model, weight_decay, learning_rate, betas, **kwargs):
+    # All params passed by train.py are available here:
+    #   betas=(beta1, beta2), muon_momentum, device_type, ddp, n_embd, n_head
+    # Unused ones are safely captured by **kwargs.
     return MyOptimizer(
         model.parameters(),
         lr=learning_rate,
