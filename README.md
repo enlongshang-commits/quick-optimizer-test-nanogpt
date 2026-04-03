@@ -18,7 +18,7 @@ The default configs and patches in this repo are tuned for **Apple Silicon (MPS)
 |---------|-----------|------------|----------|
 | `device` | `mps` | `cuda` | `cpu` |
 | `dtype` | `float32` | `bfloat16` or `float16` | `float32` |
-| `compile` | `False` | `True` | `False` |
+| `compile` | `False` | `True` (Python ≤3.11 only) | `False` |
 
 Additionally, the `soap.py` in this repo includes a patch that falls back `torch.linalg.eigh` and `torch.linalg.qr` to CPU, because MPS does not implement these ops. On CUDA this patch is harmless but unnecessary.
 
@@ -38,7 +38,10 @@ bash setup.sh
 `setup.sh` will automatically:
 - Clone nanoGPT and copy `model.py`, `configurator.py`, `data/`
 - Download `muon.py` and `soap.py`
+- Install `screen` (Linux only, for background training sessions)
 - Install Python dependencies via `pip install -r requirements.txt`
+
+**Note for cloud GPU servers (e.g. AutoDL):** `setup.sh` uses `--extra-index-url https://pypi.org/simple` so packages not available on regional mirrors (e.g. `adam-mini`, `wandb`) are fetched from the official PyPI automatically.
 
 ## Prepare Dataset
 
@@ -51,6 +54,19 @@ Full training (OpenWebText, ~54GB):
 ```bash
 python data/openwebtext/prepare.py
 ```
+
+## Background Training (Linux/Server)
+
+On a remote server, use `screen` to keep training running after closing the SSH connection:
+
+```bash
+screen -S train
+# run your training commands here
+# press Ctrl+A then D to detach (training continues in background)
+# reconnect later with: screen -r train
+```
+
+On Mac, use the system Terminal app (not VSCode's built-in terminal) — closing VSCode will not kill the process.
 
 ## Run Training
 

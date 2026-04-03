@@ -23,6 +23,9 @@ curl -fsSL https://raw.githubusercontent.com/KellerJordan/Muon/master/muon.py \
 curl -fsSL https://raw.githubusercontent.com/nikhilvyas/SOAP/main/soap.py \
     -o "$PROJ_DIR/soap.py"
 
+echo "=== Installing system packages ==="
+apt-get install -y screen 2>/dev/null || true
+
 echo "=== Installing Python packages ==="
 pip install -r requirements.txt --extra-index-url https://pypi.org/simple --trusted-host pypi.org --trusted-host files.pythonhosted.org
 
